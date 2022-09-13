@@ -1,0 +1,834 @@
+{
+	"info": {
+		"_postman_id": "f78df405-5e13-44cf-aa7b-addff638a3c7",
+		"name": "Contacts API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21554980"
+	},
+	"item": [
+		{
+			"name": "Basic endpoints",
+			"item": [
+				{
+					"name": "Get the full contact list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type is application/json\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a contact",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set(\"contact_id\", jsonData._id);\r",
+									"pm.collectionVariables.set(\"contact_email\", jsonData.email);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"{{FirstName}}\",\r\n    \"lastName\": \"{{LastName}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"location\": {\r\n        \"city\": \"{{city}}\",\r\n        \"country\": \"{{country}}\"\r\n    },\r\n    \"employer\": {\r\n    \t\"jobTitle\": \"{{jobTitle}}\",\r\n    \t\"company\": \"{{company}}\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a contact by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Correct contact email is returned\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(pm.collectionVariables.get(\"contact_email\"));\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Correct first name is returned\", function () {\r",
+									"    pm.expect(jsonData.firstName).to.eql(pm.collectionVariables.get(\"FirstName\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Correct last name is returned\", function () {\r",
+									"    pm.expect(jsonData.lastName).to.eql(pm.collectionVariables.get(\"LastName\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Correct city is returned\", function () {\r",
+									"    pm.expect(jsonData.location.city).to.eql(pm.collectionVariables.get(\"city\"));\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/{{contact_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{contact_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update an existing contact CITY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"{{FirstName_updated}}\",\r\n    \"lastName\": \"{{LastName_updated}}\",\r\n    \"email\": \"{{email_updated}}\",\r\n    \"location\": {\r\n        \"city\": \"{{city_updated}}\",\r\n        \"country\": \"{{country_updated}}\"\r\n    },\r\n    \"employer\": {\r\n    \t\"jobTitle\": \"{{jobTitle_updated}}\",\r\n    \t\"company\": \"{{company_updated}}\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/{{contact_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{contact_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a contact Check city updated",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Correct firstName is returned\", function () {\r",
+									"    pm.expect(jsonData.firstName).to.eql(pm.collectionVariables.get(\"FirstName_updated\"));\r",
+									"});\r",
+									"pm.test(\"Correct lastName is returned\", function () {\r",
+									"    pm.expect(jsonData.lastName).to.eql(pm.collectionVariables.get(\"LastName_updated\"));\r",
+									"});\r",
+									"pm.test(\"Correct email is returned\", function () {\r",
+									"    pm.expect(jsonData.email).to.eql(pm.collectionVariables.get(\"email_updated\"));\r",
+									"});\r",
+									"pm.test(\"Correct city is returned\", function () {\r",
+									"    pm.expect(jsonData.location.city).to.eql(pm.collectionVariables.get(\"city_updated\"));\r",
+									"});\r",
+									"pm.test(\"Correct country is returned\", function () {\r",
+									"    pm.expect(jsonData.location.country).to.eql(pm.collectionVariables.get(\"country_updated\"));\r",
+									"});\r",
+									"pm.test(\"Correct jobTitle is returned\", function () {\r",
+									"    pm.expect(jsonData.employer.jobTitle).to.eql(pm.collectionVariables.get(\"jobTitle_updated\"));\r",
+									"});\r",
+									"pm.test(\"Correct company is returned\", function () {\r",
+									"    pm.expect(jsonData.employer.company).to.eql(pm.collectionVariables.get(\"company_updated\"));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/{{contact_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{contact_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a contact by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/{{contact_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{contact_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Response time is less than 3000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Negative requests",
+			"item": [
+				{
+					"name": "Get the contact Not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/none",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"none"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a contact missing first name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Missing the firstNAme error is returned\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"First Name is required\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"\",\r\n    \"lastName\": \"{{LastNameNeg}}\",\r\n    \"email\": \"{{emailNeg}}\",\r\n    \"location\": {\r\n        \"city\": \"{{city}}\",\r\n        \"country\": \"{{country}}\"\r\n    },\r\n    \"employer\": {\r\n    \t\"jobTitle\": \"{{jobTitleNeg}}\",\r\n    \t\"company\": \"{{companyNeg}}\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add contact missing Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Missing email correct error message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Email is required\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"{{FirstNameNeg}}\",\r\n    \"lastName\": \"{{LastNameNeg}}\",\r\n    \"email\": \"\",\r\n    \"location\": {\r\n        \"city\": \"{{city}}\",\r\n        \"country\": \"{{country}}\"\r\n    },\r\n    \"employer\": {\r\n    \t\"jobTitle\": \"{{jobTitleNeg}}\",\r\n    \t\"company\": \"{{companyNeg}}\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a contact Company too long",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Too long Company name error is returned\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"is longer than the maximum allowed length (30)\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"{{FirstNameNeg}}\",\r\n    \"lastName\": \"{{LastNameNeg}}\",\r\n    \"email\": \"{{emailNeg}}\",\r\n    \"location\": {\r\n        \"city\": \"{{city}}\",\r\n        \"country\": \"{{country}}\"\r\n    },\r\n    \"employer\": {\r\n    \t\"jobTitle\": \"{{jobTitleNeg}}\",\r\n    \t\"company\": \"Too long company 234567890Music1234567890Music1234567890\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add contact Last name special characters",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Special chars in lastName error is returned\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Validator failed for path `lastName`\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"{{FirstNameNeg}}\",\r\n    \"lastName\": \"Semocolumn present;\",\r\n    \"email\": \"{{emailNeg}}\",\r\n    \"location\": {\r\n        \"city\": \"{{city}}\",\r\n        \"country\": \"{{country}}\"\r\n    },\r\n    \"employer\": {\r\n    \t\"jobTitle\": \"{{jobTitleNeg}}\",\r\n    \t\"company\": \"{{companyNeg}}\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add contact Email without @",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Invalid email error is returned\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Validator failed for path `email`\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"{{FirstNameNeg}}\",\r\n    \"lastName\": \"{{LastNameNeg}}\",\r\n    \"email\": \"emailwithoutat.com\",\r\n    \"location\": {\r\n        \"city\": \"{{city}}\",\r\n        \"country\": \"{{country}}\"\r\n    },\r\n    \"employer\": {\r\n    \t\"jobTitle\": \"{{jobTitleNeg}}\",\r\n    \t\"company\": \"{{companyNeg}}\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a negative contact (POSITIVE TEST)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.collectionVariables.set(\"neg_contact_id\", jsonData._id);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"{{FastNameNeg_created}}\",\r\n    \"lastName\": \"{{LastNameNeg_created}}\",\r\n    \"email\": \"{{emailNeg_created}}\",\r\n    \"location\": {\r\n        \"city\": \"{{city}}\",\r\n        \"country\": \"{{country}}\"\r\n    },\r\n    \"employer\": {\r\n    \t\"jobTitle\": \"{{jobTitleNeg_created}}\",\r\n    \t\"company\": \"{{companyNeg_created}}\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}",
+							"host": [
+								"{{base_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update contact Too long firstNname",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Too long firstNAme error is returned\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Too long name (more than 20 charachters)\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Too long name (more than 20 charachters)\",\r\n    \"lastName\": \"{{LastNameNeg_created}}\",\r\n    \"email\": \"{{emailNeg_created}}\",\r\n    \"location\": {\r\n        \"city\": \"{{city}}\",\r\n        \"country\": \"{{country}}\"\r\n    },\r\n    \"employer\": {\r\n    \t\"jobTitle\": \"{{jobTitleNeg_created}}\",\r\n    \t\"company\": \"{{companyNeg_created}}\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/{{neg_contact_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{neg_contact_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update contact missing email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Missing email correct error message\", function () {\r",
+									"    pm.expect(pm.response.text()).to.include(\"Email is required\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"{{FastNameNeg_created}}\",\r\n    \"lastName\": \"{{LastNameNeg_created}}\",\r\n    \"email\": \"\",\r\n    \"location\": {\r\n        \"city\": \"{{city}}\",\r\n        \"country\": \"{{country}}\"\r\n    },\r\n    \"employer\": {\r\n    \t\"jobTitle\": \"{{jobTitleNeg_created}}\",\r\n    \t\"company\": \"{{companyNeg_created}}\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/{{neg_contact_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{neg_contact_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a negative contact (POSITIVE TEST)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/{{neg_contact_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"{{neg_contact_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://3.13.86.142:3000/contacts",
+			"type": "string"
+		},
+		{
+			"key": "FirstName",
+			"value": "Leonardo",
+			"type": "string"
+		},
+		{
+			"key": "LastName",
+			"value": "Da Vinci",
+			"type": "string"
+		},
+		{
+			"key": "email",
+			"value": "leonardodavinci@fake.com",
+			"type": "string"
+		},
+		{
+			"key": "city",
+			"value": "Milano",
+			"type": "string"
+		},
+		{
+			"key": "country",
+			"value": "IT",
+			"type": "string"
+		},
+		{
+			"key": "jobTitle",
+			"value": "Scientist",
+			"type": "string"
+		},
+		{
+			"key": "company",
+			"value": "Science",
+			"type": "string"
+		},
+		{
+			"key": "FirstName_updated",
+			"value": "Rafael",
+			"type": "string"
+		},
+		{
+			"key": "LastName_updated",
+			"value": "Santi",
+			"type": "string"
+		},
+		{
+			"key": "email_updated",
+			"value": "rafaelsanti@fake.com",
+			"type": "string"
+		},
+		{
+			"key": "city_updated",
+			"value": "Specia",
+			"type": "string"
+		},
+		{
+			"key": "country_updated",
+			"value": "SW",
+			"type": "string"
+		},
+		{
+			"key": "contact_id",
+			"value": ""
+		},
+		{
+			"key": "jobTitle_updated",
+			"value": "Artist",
+			"type": "string"
+		},
+		{
+			"key": "company_updated",
+			"value": "Art",
+			"type": "string"
+		},
+		{
+			"key": "FirstNameNeg",
+			"value": "Cutugno",
+			"type": "string"
+		},
+		{
+			"key": "LastNameNeg",
+			"value": "Toto",
+			"type": "string"
+		},
+		{
+			"key": "contact_email",
+			"value": ""
+		},
+		{
+			"key": "neg_contact_email",
+			"value": ""
+		},
+		{
+			"key": "neg_contact_id",
+			"value": ""
+		},
+		{
+			"key": "emailNeg",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "jobTitleNeg",
+			"value": "Singer",
+			"type": "string"
+		},
+		{
+			"key": "companyNeg",
+			"value": "Music",
+			"type": "string"
+		},
+		{
+			"key": "FastNameNeg_created",
+			"value": "Monica",
+			"type": "string"
+		},
+		{
+			"key": "LastNameNeg_created",
+			"value": "Bellucci",
+			"type": "string"
+		},
+		{
+			"key": "emailNeg_created",
+			"value": "monicabellucci@fake.com",
+			"type": "string"
+		},
+		{
+			"key": "jobTitleNeg_created",
+			"value": "actress",
+			"type": "string"
+		},
+		{
+			"key": "companyNeg_created",
+			"value": "art",
+			"type": "string"
+		}
+	]
+}
